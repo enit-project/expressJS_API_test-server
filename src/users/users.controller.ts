@@ -1,3 +1,8 @@
+// API controller section.
+// apply the security rule for the user level.
+// call the functionality logics (which are for the calculation of datas)
+// pass the response object with the Http state
+
 import {
   Controller,
   Get,

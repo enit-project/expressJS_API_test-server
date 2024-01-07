@@ -1,35 +1,59 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+// API service section.
+// filter the invalid input from user.
+// execute the Prisma SQL querry.
+// pass the data (or the work state) for the controller section.
+
+import { Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { User } from './entities/user.entity';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class UsersService {
-  private users: Array<User> = [];
-  private id = 0;
+  constructor(private prisma: PrismaService) {}
 
   create(createUserDto: CreateUserDto) {
-    this.users.push({ id: ++this.id, ...createUserDto, createdAt: new Date() });
+    const state = this.prisma.user.create({ data: createUserDto });
+    state.catch((e) => console.log(e));
+
+    // this.prisma.user.create({ data: createUserDto });
   }
 
   findAll() {
-    return [...this.users];
+    const state = this.prisma.user.findMany();
+    state.catch((e) => console.log(e));
+    return state;
+
+    // return this.prisma.user.findMany();
   }
 
   findOne(id: number) {
-    const found = this.users.find((u) => u.id === id);
-    if (!found) throw new NotFoundException();
-    return found;
+    const state = this.prisma.user.findUnique({ where: { id } });
+    state.catch((e) => console.log(e));
+    return state;
+
+    // return this.prisma.user.findUnique({ where: { id } });
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {
-    const found = this.findOne(id);
-    this.remove(id);
-    this.users.push({ ...found, ...updateUserDto, updatedAt: new Date() });
+    const state = this.prisma.user.update({
+      where: { id },
+      data: updateUserDto,
+    });
+    state.catch((e) => console.log(e));
+    return state;
+
+    // return this.prisma.user.update({
+    //   where: { id },
+    //   data: updateUserDto,
+    // });
   }
 
   remove(id: number) {
-    this.findOne(id);
-    this.users = this.users.filter((u) => u.id !== id);
+    const state = this.prisma.user.delete({ where: { id } });
+    state.catch((e) => console.log(e));
+    return state;
+
+    // return this.prisma.user.delete({ where: { id } });
   }
 }
