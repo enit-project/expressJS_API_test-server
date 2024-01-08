@@ -13,10 +13,11 @@ services:
       - '5432:5432'
       
   nest-api:
-    container_name: nest-api
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: nest-api:latest
+    # container_name: nest-api
+    # build:
+    #   context: .
+    #   dockerfile: Dockerfile
     command: >
           bash -c "npx prisma migrate dev --name 'docker-inner-init'
           && npm run start:prod "
