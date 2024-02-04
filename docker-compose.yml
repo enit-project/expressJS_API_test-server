@@ -12,7 +12,7 @@ services:
     ports:
       - '5432:5432'
       
-  nest-api:
+  ghcr.io/enit-project/nest-api:
     image: nest-api:latest
     # container_name: nest-api
     # build:
