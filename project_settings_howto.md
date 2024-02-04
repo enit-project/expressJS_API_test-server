@@ -24,7 +24,7 @@
 # DB 마이그레이션
   1. /prisma/schema.prisma 를 열고, 모델 스키마를 수정한다.
   2. 수정사항이 /prisma 에 적용되게 하려면, 다음 명령어를 입력한다.
-    `npx prisma migrate diff --from-empty --to-schema-datamodel ./prisma/schema.prisma --script`
+    `npx prisma generate`
     해당 명령어는 현재 DB 서버가 구동되지 않아도 prisma 만 자체적으로 마이그레이션을 해볼 수 있는 명령어다.
     이 명령어를 입력하지 않으면 vscode에서 모델 스키마를 snippet나 hinting에 반영하지 않는다.
   3. 다른 작업을 전부 완료한 후, 
