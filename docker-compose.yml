@@ -14,13 +14,21 @@ services:
       
   nest-api:
     image: nest-api:latest
-    # container_name: nest-api
-    # build:
-    #   context: .
-    #   dockerfile: Dockerfile
-    command: >
-          bash -c "npx prisma migrate dev --name 'docker-inner-init'
-          && npm run start:prod "
+
+    # enable building mode. if you want to just pull and hot start, disable this code.
+    container_name: nest-api
+    build:
+      context: .
+      dockerfile: Dockerfile
+
+    # run migration command
+    command: npm run start:prod
+    
+    # run reset command
+    # command: >
+    #       bash -c "npx prisma migrate reset --force
+    #       && npm run start:prod"
+
     ports:
       - 3000:3000
     depends_on:
