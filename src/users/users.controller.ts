@@ -45,3 +45,11 @@ export class UsersController {
     return this.usersService.remove(+id);
   }
 }
+
+@Controller('secure')
+export class SecureTestController {
+  @Get('helloWorld')
+  getSecureTest() {
+    return 'hello, world!';
+  }
+}
