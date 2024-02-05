@@ -44,6 +44,15 @@ export class UsersController {
   remove(@Param('id') id: string) {
     return this.usersService.remove(+id);
   }
+
+}
+
+@Controller('unsecure')
+export class UnsecureTestController {
+  @Get('helloWorld')
+  getTest() {
+    return 'hello, world!';
+  }
 }
 
 @Controller('secure')
