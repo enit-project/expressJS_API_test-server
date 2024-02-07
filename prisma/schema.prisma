@@ -10,11 +10,17 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum Role {
+  STUDENT
+  PARENT
+  TEACHER
+}
+
 model User {
   id Int @id @default(autoincrement())
   name String @unique
   email String @unique
+  role Role
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  firebaseAuthUID String? @unique
 }

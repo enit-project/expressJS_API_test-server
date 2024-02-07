@@ -47,18 +47,18 @@ export class UsersController {
 
 }
 
-@Controller('unsecure')
-export class UnsecureTestController {
-  @Get('helloWorld')
-  getTest() {
-    return 'hello, world!';
-  }
-}
+// @Controller('unsecure')
+// export class UnsecureTestController {
+//   @Get('helloWorld')
+//   getTest() {
+//     return 'hello, world!';
+//   }
+// }
 
-@Controller('secure')
-export class SecureTestController {
-  @Get('helloWorld')
-  getSecureTest() {
-    return 'hello, world!';
-  }
-}
+// @Controller('secure')
+// export class SecureTestController {
+//   @Get('helloWorld')
+//   getSecureTest() {
+//     return 'hello, world!';
+//   }
+// }
