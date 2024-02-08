@@ -11,14 +11,22 @@ import {
   Patch,
   Param,
   Delete,
+  Req,
 } from '@nestjs/common';
+import { Request } from 'express';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 
+
 @Controller('users')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(private readonly usersService: UsersService) { }
+
+  @Post('join')
+  join(@Body() createUserDto: CreateUserDto, @Req() request: Request) {
+    return this.usersService.join(createUserDto, request['user'].uid);
+  }
 
   @Post()
   create(@Body() createUserDto: CreateUserDto) {
@@ -44,7 +52,6 @@ export class UsersController {
   remove(@Param('id') id: string) {
     return this.usersService.remove(+id);
   }
-
 }
 
 // @Controller('unsecure')

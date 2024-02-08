@@ -21,6 +21,7 @@ model User {
   name String @unique
   email String @unique
   role Role
+  firebaseAuthUID String @unique 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
