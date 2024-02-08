@@ -18,7 +18,7 @@ enum Role {
 
 model User {
   id Int @id @default(autoincrement())
-  name String @unique
+  name String
   email String @unique
   role Role
   firebaseAuthUID String @unique 

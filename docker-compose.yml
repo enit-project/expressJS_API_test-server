@@ -11,8 +11,10 @@ services:
       - postgres:/var/lib/postgresql/data
     ports:
       - '5432:5432'
-      
+
   nest-api:
+    stdin_open: true
+    tty: true
     image: nest-api:latest
 
     # enable building mode. if you want to just pull and hot start, disable this code.
@@ -21,13 +23,7 @@ services:
       context: .
       dockerfile: Dockerfile
 
-    # run migration command
-    command: npm run start:prod
-    
-    # run reset command
-    # command: >
-    #       bash -c "npx prisma migrate reset --force
-    #       && npm run start:prod"
+    command: npm run start:dev
 
     ports:
       - 3000:3000
@@ -35,6 +31,6 @@ services:
       - postgres
     env_file:
       - .env.development
-      
+
 volumes:
   postgres:

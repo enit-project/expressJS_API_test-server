@@ -12,39 +12,40 @@ import {
   Param,
   Delete,
   Req,
+  Logger,
 } from '@nestjs/common';
 import { Request } from 'express';
-import { UsersService } from './users.service';
+import { UsersDebugService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 
-@Controller('users')
-export class UsersController {
-  constructor(private readonly usersService: UsersService) { }
-
-  @Post('join')
-  join(@Body() createUserDto: CreateUserDto, @Req() request: Request) {
-    return this.usersService.join(createUserDto, request['user'].uid);
+@Controller('debug/users')
+export class UsersDebugController {
+  private readonly logger = new Logger('debug/users');
+  constructor(private readonly usersDebugService: UsersDebugService) { }
+  @Post('create_noAuth')
+  createNoAuth(@Body() createUserDto: CreateUserDto) {
+    this.logger.error('this.logger.error testment');
+    return this.usersDebugService.create(createUserDto);
   }
-
   @Get()
   findAll() {
-    return this.usersService.findAll();
+    return this.usersDebugService.findAll();
   }
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.usersService.findOne(+id);
+    return this.usersDebugService.findOne(+id);
   }
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.usersService.update(+id, updateUserDto);
+    return this.usersDebugService.update(+id, updateUserDto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.usersService.remove(+id);
+    return this.usersDebugService.remove(+id);
   }
 }
 

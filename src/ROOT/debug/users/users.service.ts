@@ -9,14 +9,14 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
-export class UsersService {
+export class UsersDebugService {
   constructor(private prisma: PrismaService) { }
-
-  join(createUserDto: CreateUserDto, firebaseAuthUID: string) {
+  create(createUserDto: CreateUserDto) {
     const userObject = {
       ...createUserDto,
-      firebaseAuthUID: firebaseAuthUID,
+      firebaseAuthUID: "firebaseAuthUID_example_hahaha",
     };
+
     const state = this.prisma.user.create({ data: userObject });
     state.catch((e) => console.log(e));
   }

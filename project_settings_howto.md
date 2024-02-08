@@ -31,7 +31,7 @@
     `docker compose build`
     입력하여 현재 작업상태로 리빌드한다.
   4. 이제 postgreDB 이미지에도 마이그레이션을 적용한다.
-    `docker compose run nest-api npx prisma migrate dev`
+    `docker compose run nest-api npx prisma migrate dev` or prisma migrate deploy
   5. 그럼 정상적으로 마이그레이션이 적용되고, 평범하게  `docker compose up` 으로 적용시킨다.
 
 # 클라우드 서버 업로드 및 배포

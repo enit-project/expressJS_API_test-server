@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 
 @Injectable()
-export class AppService {
+export class ApiService {
   getDescription(): string {
-    return 'Welcome! this is nest.js + RESTful api test server!';
+    return 'production api section';
   }
 }
