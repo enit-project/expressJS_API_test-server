@@ -18,7 +18,6 @@ import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 
-
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) { }
@@ -26,11 +25,6 @@ export class UsersController {
   @Post('join')
   join(@Body() createUserDto: CreateUserDto, @Req() request: Request) {
     return this.usersService.join(createUserDto, request['user'].uid);
-  }
-
-  @Post()
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.usersService.create(createUserDto);
   }
 
   @Get()

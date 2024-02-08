@@ -1,11 +1,7 @@
 /* eslint-disable @typescript-eslint/ban-types */
 import { Role } from '@prisma/client';
 import { IsEmail } from 'class-validator';
-import {
-  registerDecorator,
-  ValidationOptions,
-  ValidationArguments,
-} from 'class-validator';
+import { registerDecorator } from 'class-validator';
 
 // to make more custom dto validator decorators :
 // https://github.com/typestack/class-validator#custom-validation-classes
@@ -35,5 +31,5 @@ export class CreateUserDto {
   email: string;
 
   role: Role;
-  firebaseAuthUID: string;
+  // firebaseAuthUID: string;
 }
