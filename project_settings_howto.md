@@ -18,7 +18,7 @@
     `docker compose up`
   3. 다른 프롬프트를 열고, 다시 `npx dotenv-cli -e .env.studio -- npx prisma studio`
   4. 자동으로 인터넷 페이지가 열리겠지만,
-    - localhost:3000 는 swagger UI API doc 페이지이다. API의 작동을 검증해볼 수 있다.
+    - localhost:3000/swag 는 swagger UI API doc 페이지이다. API의 작동을 검증해볼 수 있다.
     - localhost:5555 는 prisma studio 페이지이다. DB 테이블을 직접 보고 수정할 수 있다.
 
 # DB 마이그레이션
@@ -31,7 +31,9 @@
     `docker compose build`
     입력하여 현재 작업상태로 리빌드한다.
   4. 이제 postgreDB 이미지에도 마이그레이션을 적용한다.
-    `docker compose run nest-api npx prisma migrate dev` or prisma migrate deploy
+    `docker compose run nest-api npx prisma migrate dev` (DB 보존이 필요 없을때)
+    혹은 
+    `prisma migrate deploy` (DB를 보존해야 할 때)
   5. 그럼 정상적으로 마이그레이션이 적용되고, 평범하게  `docker compose up` 으로 적용시킨다.
 
 # 클라우드 서버 업로드 및 배포

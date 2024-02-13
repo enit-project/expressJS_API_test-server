@@ -4,8 +4,8 @@
 // pass the data (or the work state) for the controller section.
 
 import { Injectable } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { CreateUserDto } from './dto/create-user.debug.dto';
+import { UpdateUserDto } from './dto/update-user.debug.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
@@ -14,49 +14,43 @@ export class UsersDebugService {
   create(createUserDto: CreateUserDto) {
     const userObject = {
       ...createUserDto,
-      firebaseAuthUID: "firebaseAuthUID_example_hahaha",
+      firebaseAuthUID: 'firebaseAuthUID_example_hahaha',
     };
 
     const state = this.prisma.user.create({ data: userObject });
     state.catch((e) => console.log(e));
+    return state;
   }
 
   findAll() {
     const state = this.prisma.user.findMany();
     state.catch((e) => console.log(e));
     return state;
-
-    // return this.prisma.user.findMany();
   }
 
-  findOne(id: number) {
-    const state = this.prisma.user.findUnique({ where: { id } });
+  findOneByUID(firebaseAuthUID: string) {
+    const state = this.prisma.user.findUnique({
+      where: { firebaseAuthUID: firebaseAuthUID },
+    });
     state.catch((e) => console.log(e));
     return state;
-
-    // return this.prisma.user.findUnique({ where: { id } });
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
+  updateByUID(firebaseAuthUID: string, updateUserDto: UpdateUserDto) {
     const state = this.prisma.user.update({
-      where: { id },
+      where: { firebaseAuthUID: firebaseAuthUID },
       data: updateUserDto,
     });
     state.catch((e) => console.log(e));
     return state;
-
-    // return this.prisma.user.update({
-    //   where: { id },
-    //   data: updateUserDto,
-    // });
   }
 
-  remove(id: number) {
-    const state = this.prisma.user.delete({ where: { id } });
+  deleteByUID(firebaseAuthUID: string) {
+    const state = this.prisma.user.delete({
+      where: { firebaseAuthUID: firebaseAuthUID },
+    });
     state.catch((e) => console.log(e));
     return state;
-
-    // return this.prisma.user.delete({ where: { id } });
   }
 }
 

@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { ApiService } from './debug.service';
 import { ApiController } from './debug.controller';
 
-import { UsersDebugModule } from './users/users.module';
+import { UsersDebugModule } from './users/users.debug.module';
 
 @Module({
   controllers: [ApiController],

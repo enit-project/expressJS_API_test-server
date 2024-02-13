@@ -11,13 +11,14 @@ import {
   Patch,
   Param,
   Delete,
-  Req,
   Logger,
+  UseInterceptors,
+  ClassSerializerInterceptor,
 } from '@nestjs/common';
-import { Request } from 'express';
-import { UsersDebugService } from './users.service';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { UsersDebugService } from './users.debug.service';
+import { CreateUserDto } from './dto/create-user.debug.dto';
+import { UpdateUserDto } from './dto/update-user.debug.dto';
+import { ShowUserDTO } from './dto/show-user.debug.dto';
 
 @Controller('debug/users')
 export class UsersDebugController {
@@ -33,19 +34,24 @@ export class UsersDebugController {
     return this.usersDebugService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.usersDebugService.findOne(+id);
+  @UseInterceptors(ClassSerializerInterceptor)
+  @Get(':uid')
+  findOne(@Param('uid') uid: string) {
+    const state = this.usersDebugService.findOneByUID(uid);
+    return state.then((res) => new ShowUserDTO(res));
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.usersDebugService.update(+id, updateUserDto);
+  @UseInterceptors(ClassSerializerInterceptor)
+  @Patch(':uid')
+  update(@Param('uid') uid: string, @Body() updateUserDto: UpdateUserDto) {
+    const state = this.usersDebugService.updateByUID(uid, updateUserDto);
+    return state.then((res) => new ShowUserDTO(res));
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.usersDebugService.remove(+id);
+  @Delete(':uid')
+  deleteByUID(@Param('uid') uid: string) {
+    console.log(uid);
+    return this.usersDebugService.deleteByUID(uid);
   }
 }
 

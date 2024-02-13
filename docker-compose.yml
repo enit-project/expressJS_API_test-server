@@ -21,7 +21,7 @@ services:
     container_name: nest-api
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: DockerFile
 
     command: npm run start:dev
 
