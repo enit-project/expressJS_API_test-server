@@ -17,11 +17,45 @@ enum Role {
 }
 
 model User {
-  id Int @id @default(autoincrement())
-  name String
-  email String @unique
-  role Role
-  firebaseAuthUID String @unique 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id              Int      @id @default(autoincrement())
+  name            String
+  email           String   @unique
+  role            Role
+  firebaseAuthUID String   @unique
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  userRelated UserRelated[]
+}
+
+
+enum PrivilegeStatus {
+  PENDING
+  REJECTED
+  APPROVED
+}
+
+model UserRelated {
+  id     Int @id @default(autoincrement())
+  user User  @relation(fields: [ownerId], references: [id])
+  ownerId Int
+  giverId Int
+  relatedPrivilege RelatedPrivilege[] 
+}
+
+enum REST {
+  CREATE
+  READ
+  UPDATE
+  DELETE
+}
+
+model RelatedPrivilege {
+  id     Int @id @default(autoincrement())
+  userRelated UserRelated @relation(fields: [userRelatedId], references: [id])
+  userRelatedId Int
+  table String // which table to set privilege
+  field String // which field to set privilege
+  status PrivilegeStatus @default(PENDING)
+  action REST
 }
