@@ -23,7 +23,6 @@ export const modelMETA: {
     id: 0,
     ownerId: 0,
     giverId: 0,
-    status: PrivilegeStatus.APPROVED,
   },
   RelatedPrivilege: {
     id: 0,
@@ -31,5 +30,6 @@ export const modelMETA: {
     table: '',
     field: '',
     action: REST.CREATE,
+    status: PrivilegeStatus.APPROVED,
   },
 };
