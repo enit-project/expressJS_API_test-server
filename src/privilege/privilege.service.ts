@@ -7,7 +7,6 @@ import {
   CreateUserRelatedDto,
   CreateRelatedPrivilegeDto,
 } from './dto/create.dto';
-import { ExceptionsHandler } from '@nestjs/core/exceptions/exceptions-handler';
 
 @Injectable()
 export class PrivilegeService {
@@ -15,27 +14,15 @@ export class PrivilegeService {
 
   /**
    * ask for the privilege and set it to "PENDING" state
-   * @param ownerUserId : who would access the privilege
-   * @param giverUserId : who would give the privilege
-   * @param tableName : giver's information table name
-   * @param fieldName : giver's information table field(column)
-   * @param action : CRUD action kinds
    */
   async requestTo(
     userRelatedDto: CreateUserRelatedDto,
     relatedPrivilegeDto: CreateRelatedPrivilegeDto,
   ): Promise<[boolean, string]> {
     // skip the validation of ownerUserId, giverUserId is valid id.
-    // validate if tableName and fieldName is really exists
+    // validate if tableName is really exists
     if (!Object.keys(modelMETA).includes(relatedPrivilegeDto.table)) {
       return [false, 'no exists tableName on DB'];
-    }
-    if (
-      !Object.keys(modelMETA[relatedPrivilegeDto.table]).includes(
-        relatedPrivilegeDto.table,
-      )
-    ) {
-      return [false, 'no exists fieldName on DB'];
     }
 
     // validate if request privilege is not already in the DB.
@@ -62,7 +49,6 @@ export class PrivilegeService {
             where: {
               userRelatedId: id,
               table: relatedPrivilegeDto.table,
-              field: relatedPrivilegeDto.field,
               action: relatedPrivilegeDto.action,
             },
           });
@@ -147,6 +133,10 @@ export class PrivilegeService {
     return this.requestWhat(relatedPrivilegeId, PrivilegeStatus.APPROVED);
   }
 
+  async requestIfAuthorOnly(relatedPrivilegeId: number) {
+    return this.requestWhat(relatedPrivilegeId, PrivilegeStatus.IFAUTHOR);
+  }
+
   async requestReject(relatedPrivilegeId: number) {
     return this.requestWhat(relatedPrivilegeId, PrivilegeStatus.REJECTED);
   }
@@ -162,7 +152,6 @@ export class PrivilegeService {
     ownerId: number,
     giverId: number,
     table: string,
-    field: string,
   ): Promise<PrivilegeStatus | undefined> {
     try {
       const status = await this.prisma.userRelated
@@ -176,7 +165,7 @@ export class PrivilegeService {
             })
             .then((relatedPrivilegeRecordList) => {
               for (const record of relatedPrivilegeRecordList) {
-                if (record.table == table && record.field == field) {
+                if (record.table == table) {
                   return record.status;
                 }
               }
@@ -188,11 +177,17 @@ export class PrivilegeService {
     }
   }
 
+  /**
+   * delete the owner's previlege completelly from DB.
+   * @param ownerId
+   * @param giverId
+   * @param table
+   * @returns
+   */
   async requestRevert(
     ownerId: number,
     giverId: number,
     table: string,
-    field: string,
   ): Promise<[boolean, string]> {
     try {
       const status = await this.prisma.userRelated
@@ -206,7 +201,7 @@ export class PrivilegeService {
             })
             .then((relatedPrivilegeRecordList) => {
               for (const record of relatedPrivilegeRecordList) {
-                if (record.table == table && record.field == field) {
+                if (record.table == table) {
                   return [userRelatedRecord.id, record.id];
                 }
               }
