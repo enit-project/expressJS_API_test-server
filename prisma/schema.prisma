@@ -26,8 +26,8 @@ model User {
   updatedAt       DateTime @updatedAt
 
   userRelated UserRelated[]
+  Board       Board[]
 }
-
 
 enum PrivilegeStatus {
   PENDING
@@ -37,11 +37,11 @@ enum PrivilegeStatus {
 }
 
 model UserRelated {
-  id     Int @id @default(autoincrement())
-  user User  @relation(fields: [ownerId], references: [id])
-  ownerId Int
-  giverId Int
-  relatedPrivilege RelatedPrivilege[] 
+  id               Int                @id @default(autoincrement())
+  user             User               @relation(fields: [ownerId], references: [id])
+  ownerId          Int
+  giverId          Int
+  relatedPrivilege RelatedPrivilege[]
 }
 
 enum REST {
@@ -52,18 +52,29 @@ enum REST {
 }
 
 model RelatedPrivilege {
-  id     Int @id @default(autoincrement())
-  userRelated UserRelated @relation(fields: [userRelatedId], references: [id])
+  id            Int             @id @default(autoincrement())
+  userRelated   UserRelated     @relation(fields: [userRelatedId], references: [id])
   userRelatedId Int
-  table String // which table to set privilege
-  status PrivilegeStatus @default(PENDING)
-  action REST
+  table         String // which table to set privilege
+  status        PrivilegeStatus @default(PENDING)
+  action        REST
+}
+
+enum DAY {
+  MON
+  TUE
+  WED
+  THU
+  FRI
+  SAT
+  SUN
 }
 
 model Board {
-  id     Int @id @default(autoincrement())
-  title String
+  id          Int    @id @default(autoincrement())
+  user        User   @relation(fields: [userId], references: [id])
+  userId      Int
+  title       String
   description String
-
+  cycle       DAY[]
 }
-

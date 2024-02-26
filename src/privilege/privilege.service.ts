@@ -24,8 +24,13 @@ export class PrivilegeService {
     if (!Object.keys(modelMETA).includes(relatedPrivilegeDto.table)) {
       return [false, 'no exists tableName on DB'];
     }
-    if (!Object.keys(modelMETA[relatedPrivilegeDto.table]).includes('author')) {
-      return [false, "the table must contains the column, 'authorUID' ."];
+    if (
+      !Object.keys(modelMETA[relatedPrivilegeDto.table]).includes('authorId')
+    ) {
+      return [
+        false,
+        "the table must contains the owner user's fkey column, 'authorId'.",
+      ];
     }
     // validate if request privilege is not already in the DB.
     try {
