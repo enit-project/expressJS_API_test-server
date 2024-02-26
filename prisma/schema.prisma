@@ -72,9 +72,18 @@ enum DAY {
 
 model Board {
   id          Int    @id @default(autoincrement())
-  user        User   @relation(fields: [userId], references: [id])
-  userId      Int
+  user        User   @relation(fields: [ownerId], references: [id])
+  ownerId      Int
   title       String
   description String
   cycle       DAY[]
+
+  authorId Int
+  Sticker  Sticker[]
+}
+
+model Sticker {
+  id      Int   @id @default(autoincrement())
+  board   Board @relation(fields: [boardId], references: [id])
+  boardId Int
 }

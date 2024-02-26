@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { modelMETA } from './dto/prisma.model.meta';
-import { PrivilegeStatus } from '@prisma/client';
+import { PrivilegeStatus, REST } from '@prisma/client';
 
 import {
   CreateUserRelatedDto,
@@ -24,6 +24,8 @@ export class PrivilegeService {
     if (!Object.keys(modelMETA).includes(relatedPrivilegeDto.table)) {
       return [false, 'no exists tableName on DB'];
     }
+
+    // validate if table has the column name 'authorId' for further IFAUTHOR state check.
     if (
       !Object.keys(modelMETA[relatedPrivilegeDto.table]).includes('authorId')
     ) {
@@ -32,6 +34,7 @@ export class PrivilegeService {
         "the table must contains the owner user's fkey column, 'authorId'.",
       ];
     }
+
     // validate if request privilege is not already in the DB.
     try {
       await this.prisma.userRelated
@@ -140,7 +143,17 @@ export class PrivilegeService {
     return this.requestWhat(relatedPrivilegeId, PrivilegeStatus.APPROVED);
   }
 
-  async requestIfAuthorOnly(relatedPrivilegeId: number) {
+  async requestIfAuthorOnly(
+    relatedPrivilegeId: number,
+  ): Promise<[boolean, string] | null> {
+    const action = (
+      await this.prisma.relatedPrivilege.findFirst({
+        where: { id: relatedPrivilegeId },
+      })
+    ).action;
+    if (action == REST.CREATE) {
+      return null;
+    }
     return this.requestWhat(relatedPrivilegeId, PrivilegeStatus.IFAUTHOR);
   }
 
