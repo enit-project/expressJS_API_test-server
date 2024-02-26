@@ -1,16 +1,17 @@
 import { User, UserRelated, RelatedPrivilege } from '@prisma/client';
 import { Role, REST, PrivilegeStatus } from '@prisma/client';
 
+
 /**
  * meta object of the prisma models.
  * all of the models must be once occour in this object.
  */
 export const modelMETA: {
-  User: User;
-  UserRelated: UserRelated;
-  RelatedPrivilege: RelatedPrivilege;
+  user: User;
+  userRelated: UserRelated;
+  relatedPrivilege: RelatedPrivilege;
 } = {
-  User: {
+  user: {
     id: 0,
     name: '',
     email: '',
@@ -19,17 +20,17 @@ export const modelMETA: {
     createdAt: new Date(),
     updatedAt: new Date(),
   },
-  UserRelated: {
+  userRelated: {
     id: 0,
     ownerId: 0,
     giverId: 0,
   },
-  RelatedPrivilege: {
+  relatedPrivilege: {
     id: 0,
     userRelatedId: 0,
     table: '',
-    field: '',
     action: REST.CREATE,
     status: PrivilegeStatus.APPROVED,
   },
 };
+

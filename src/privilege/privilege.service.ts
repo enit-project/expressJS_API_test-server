@@ -24,7 +24,9 @@ export class PrivilegeService {
     if (!Object.keys(modelMETA).includes(relatedPrivilegeDto.table)) {
       return [false, 'no exists tableName on DB'];
     }
-
+    if (!Object.keys(modelMETA[relatedPrivilegeDto.table]).includes('author')) {
+      return [false, "the table must contains the column, 'authorUID' ."];
+    }
     // validate if request privilege is not already in the DB.
     try {
       await this.prisma.userRelated
@@ -141,7 +143,7 @@ export class PrivilegeService {
     return this.requestWhat(relatedPrivilegeId, PrivilegeStatus.REJECTED);
   }
   /**
-   * check if owner has privilege of the giver on specific table - column.
+   * check if owner has privilege of the giver on specific table
    * @param ownerId pkey of owner
    * @param giverId pkey of giver
    * @param table table name
