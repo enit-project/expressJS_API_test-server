@@ -86,7 +86,11 @@ model Sticker {
   id            Int      @id @default(autoincrement())
   board         Board    @relation(fields: [boardId], references: [id])
   boardId       Int // owner of the sticker is always same as the board's owner.
-  createdAt     DateTime @default(now())
+
+  createdAtYear Int
+  createdAtMonth Int
+  createdAtDate Int
+
   emoji_unicode String
   priority      Int      @default(1)
   isFinished    Boolean  @default(true)
