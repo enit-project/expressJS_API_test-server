@@ -73,7 +73,7 @@ enum DAY {
 model Board {
   id          Int    @id @default(autoincrement())
   user        User   @relation(fields: [ownerId], references: [id])
-  ownerId      Int
+  ownerId     Int
   title       String
   description String
   cycle       DAY[]
@@ -82,13 +82,12 @@ model Board {
   Sticker  Sticker[]
 }
 
-
 model Sticker {
-  id      Int   @id @default(autoincrement())
-  board   Board @relation(fields: [boardId], references: [id])
-  boardId Int // owner of the sticker is always same as the board's owner.
-  createdAt       DateTime @default(now())
-  priority Int @default(1)
-  isFinished Boolean @default(false)
-
+  id            Int      @id @default(autoincrement())
+  board         Board    @relation(fields: [boardId], references: [id])
+  boardId       Int // owner of the sticker is always same as the board's owner.
+  createdAt     DateTime @default(now())
+  emoji_unicode String
+  priority      Int      @default(1)
+  isFinished    Boolean  @default(true)
 }
