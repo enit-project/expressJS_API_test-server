@@ -78,6 +78,9 @@ model Board {
   description String
   cycle       DAY[]
 
+  start_time // 스케줄의 시작날짜임
+  end_time // 스케줄의 끝날짜임
+
   authorId Int
   Sticker  Sticker[]
 }
@@ -87,11 +90,14 @@ model Sticker {
   board         Board    @relation(fields: [boardId], references: [id])
   boardId       Int // owner of the sticker is always same as the board's owner.
 
+  title
+  description
+
   createdAtYear Int
   createdAtMonth Int
   createdAtDate Int
 
   emoji_unicode String
-  priority      Int      @default(1)
+  // priority      Int      @default(1)
   isFinished    Boolean  @default(true)
 }
