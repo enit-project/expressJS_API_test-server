@@ -23,30 +23,35 @@ export class StatsController {
   private readonly logger = new Logger('StatsController');
   constructor(private readonly StatsService: StatsService) { }
 
-  @Post('join')
-  join(@Body() createUserDto: CreateUserDto, @Req() request: Request) {
-    return this.StatsService.join(createUserDto, request['user'].uid);
-  }
-
-  @Delete('withdraw')
-  withdraw(@Req() request: Request) {
-    return this.StatsService.withdraw(request['user'].uid);
-  }
-
   @UseInterceptors(ClassSerializerInterceptor)
   @Get('myinfo-get')
-  myInfoGet(@Req() request: Request) {
-    const state = this.StatsService.myInfoGet(request['user'].uid);
-    return state.then((res) => new ShowUserDTO(res));
+  myInfoGet(
+    year: number,
+    month: number,
+    targetBoardIdList: number[],
+    @Req() request: Request,
+  ) {
+    const state = this.StatsService.statByDay(
+      request['user'].uid,
+      year,
+      month,
+      targetBoardIdList,
+    );
+    return state;
   }
 
   @UseInterceptors(ClassSerializerInterceptor)
   @Patch('myinfo-patch')
-  myInfoPatch(@Req() request: Request, @Body() updateUserDto: UpdateUserDto) {
-    const state = this.StatsService.myInfoPatch(
-      updateUserDto,
+  myInfoPatch(
+    year: number,
+    targetBoardIdList: number[],
+    @Req() request: Request,
+  ) {
+    const state = this.StatsService.statByWeek(
       request['user'].uid,
+      year,
+      targetBoardIdList,
     );
-    return state.then((res) => new ShowUserDTO(res));
+    return state;
   }
 }
