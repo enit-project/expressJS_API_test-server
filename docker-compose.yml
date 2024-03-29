@@ -32,5 +32,23 @@ services:
     env_file:
       - .env.development
 
+  prisma-studio:
+    image: prisma-studio:latest
+
+    # enable building mode. if you want to just pull and hot start, disable this code.
+    container_name: prisma-studio
+    build:
+      context: .
+      dockerfile: DockerFile.prisma-studio
+
+    command: npx dotenv-cli -e .env.studio -- npx prisma studio
+
+    ports:
+      - 5555:5555
+    depends_on:
+      - postgres
+    env_file:
+      - .env.development
+
 volumes:
   postgres:
