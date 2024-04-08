@@ -24,7 +24,7 @@ export class StatsController {
     return state;
   }
 
-  @Post('stat-by-day')
+  @Post('stat-by-week')
   statByDay(@Body() statByDayDto: StatByDayDto, @Req() request: Request) {
     const state = this.StatsService.statByDay(
       statByDayDto.firebaseUID,

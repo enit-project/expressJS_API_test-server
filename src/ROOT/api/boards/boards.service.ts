@@ -18,11 +18,11 @@ export class BoardsService {
 
   async boardCreate(
     createBoardBody: CreateBoardBody,
-    ownerFirebaseAuthUID: string,
+    authorFirebaseAuthUID: string,
   ) {
     const authorId = await this.prisma.user
       .findUnique({
-        where: { firebaseAuthUID: createBoardBody.authorFirebaseAuthUID },
+        where: { firebaseAuthUID: authorFirebaseAuthUID },
       })
       .then((res) => {
         return res.id;
@@ -30,7 +30,7 @@ export class BoardsService {
 
     const ownerId = await this.prisma.user
       .findUnique({
-        where: { firebaseAuthUID: ownerFirebaseAuthUID },
+        where: { firebaseAuthUID: createBoardBody.ownerFirebaseAuthUID },
       })
       .then((res) => {
         return res.id;
@@ -94,8 +94,9 @@ export class BoardsService {
   boardDelete(boardId: BoardID) {
     //TODO: do the validation of the owner and author
 
-    const state = this.prisma.board.delete({
+    const state = this.prisma.board.update({
       where: { id: boardId.boardID },
+      data: { isIgnored: true },
     });
 
     state.catch((e) => console.log(e));

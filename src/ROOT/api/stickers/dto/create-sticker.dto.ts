@@ -2,10 +2,13 @@
 import { DAY } from '@prisma/client';
 import {
   IsArray,
+  IsBoolean,
   IsDate,
   IsEmail,
   IsEnum,
+  IsInt,
   IsString,
+  isBoolean,
   isInt,
 } from 'class-validator';
 import { registerDecorator } from 'class-validator';
@@ -30,27 +33,31 @@ export function IsKorEngSpace() {
   };
 }
 
-export class CreateBoardDto {
+export class CreateStickerDto {
   @IsKorEngSpace()
   title: string;
 
   @IsKorEngSpace()
   description: string;
 
-  @IsArray()
-  cycle: DAY[];
+  @IsInt()
+  createdAtYear: number;
 
-  @IsDate()
-  start_time: Date;
+  @IsInt()
+  createdAtMonth: number;
 
-  @IsDate()
-  end_time: Date;
+  @IsInt()
+  createdAtDate: number;
+
+  @IsString()
+  emoji_unicode: string;
+
 }
 
-export class CreateBoardBody {
-  createBoardDto: CreateBoardDto;
+export class CreateStickerBody {
+  createStickerDto: CreateStickerDto;
   @IsString()
-  ownerFirebaseAuthUID: string;
+  boardID: number;
 }
 
 export class YMD {
