@@ -12,11 +12,11 @@ import { StatByWeekDto, StatByDayDto } from './dto/dto';
 @Controller('api/stats')
 export class StatsController {
   private readonly logger = new Logger('StatsController');
-  constructor(private readonly StatsService: StatsService) { }
+  constructor(private readonly statsService: StatsService) { }
 
   @Post('stat-by-week')
   statByWeek(@Body() statByWeekDto: StatByWeekDto, @Req() request: Request) {
-    const state = this.StatsService.statByWeek(
+    const state = this.statsService.statByWeek(
       statByWeekDto.firebaseUID,
       statByWeekDto.year,
       statByWeekDto.targetBoardIdList,
@@ -24,9 +24,9 @@ export class StatsController {
     return state;
   }
 
-  @Post('stat-by-week')
+  @Post('stat-by-day')
   statByDay(@Body() statByDayDto: StatByDayDto, @Req() request: Request) {
-    const state = this.StatsService.statByDay(
+    const state = this.statsService.statByDay(
       statByDayDto.firebaseUID,
       statByDayDto.year,
       statByDayDto.month,
