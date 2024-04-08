@@ -1,6 +1,13 @@
 /* eslint-disable @typescript-eslint/ban-types */
 import { DAY } from '@prisma/client';
-import { IsArray, IsDate, IsEmail, IsEnum, isInt } from 'class-validator';
+import {
+  IsArray,
+  IsDate,
+  IsEmail,
+  IsEnum,
+  IsString,
+  isInt,
+} from 'class-validator';
 import { registerDecorator } from 'class-validator';
 
 // to make more custom dto validator decorators :
@@ -38,5 +45,16 @@ export class CreateBoardDto {
 
   @IsDate()
   end_time: Date;
+}
 
+export class CreateBoardBody {
+  createBoardDto: CreateBoardDto;
+  @IsString()
+  authorFirebaseAuthUID: string;
+}
+
+export class YMD {
+  currentYear: number;
+  currentMonth: number;
+  currentDate: number;
 }

@@ -12,8 +12,6 @@ export class ShowBoardDto {
   cycle: DAY[];
   start_time: Date;
   end_time: Date;
-
-  @Exclude()
   id: number;
 
   @Exclude()

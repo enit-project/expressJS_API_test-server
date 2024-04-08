@@ -18,8 +18,10 @@ import {
 import { Request } from 'express';
 import { BoardsService } from './boards.service';
 import { ShowBoardDto } from './dto/show-board.dto';
-import { CreateBoardDto } from './dto/create-board.dto';
-import { UpdateBoradDto } from './dto/update-board.dto';
+import { CreateBoardBody } from './dto/create-board.dto';
+import { UpdateBoardBody } from './dto/update-board.dto';
+import { YMD } from './dto/create-board.dto';
+import { BoardID, YMD_uid } from './dto/temporary.dto';
 
 @Controller('api/users')
 export class BoardsController {
@@ -29,46 +31,34 @@ export class BoardsController {
   @UseInterceptors(ClassSerializerInterceptor)
   @Post('board-create')
   boardCreate(
-    @Body() createBoardDto: CreateBoardDto,
-    authorFirebaseAuthUID: string,
+    @Body() createBoardBody: CreateBoardBody,
     @Req() request: Request,
   ) {
-    return this.boardsService.boardCreate(
-      createBoardDto,
-      authorFirebaseAuthUID,
-      request['user'].uid,
-    );
+    return this.boardsService.boardCreate(createBoardBody, request['user'].uid);
   }
+
   @UseInterceptors(ClassSerializerInterceptor)
-  @Get('board-all-get')
-  boardAllGet(
-    currentYear: number,
-    currentMonth: number,
-    currentDate: number,
-    @Req() request: Request,
-  ) {
+  @Post('board-all-get')
+  boardAllGet(@Body() ymd_uid: YMD_uid, @Req() request: Request) {
     const state = this.boardsService.boardAllGet(
-      request['user'].uid,
-      currentYear,
-      currentMonth,
-      currentDate,
+      ymd_uid.ownerFirebaseAuthUID,
+      ymd_uid.ymd,
     );
     return state;
   }
 
   @Delete('board-delete')
-  boardDelete(boardId: number, @Req() request: Request) {
+  boardDelete(@Body() boardId: BoardID, @Req() request: Request) {
     return this.boardsService.boardDelete(boardId);
   }
 
   @UseInterceptors(ClassSerializerInterceptor)
   @Patch('board-patch')
   boardUpdate(
-    boardId: number,
     @Req() request: Request,
-    @Body() updateBoardDto: UpdateBoradDto,
+    @Body() updateBoardBody: UpdateBoardBody,
   ) {
-    const state = this.boardsService.boardUpdate(boardId, updateBoardDto);
+    const state = this.boardsService.boardUpdate(updateBoardBody);
     return state.then((res) => new ShowBoardDto(res));
   }
 }
