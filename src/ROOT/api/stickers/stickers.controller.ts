@@ -16,49 +16,37 @@ import {
   ClassSerializerInterceptor,
 } from '@nestjs/common';
 import { Request } from 'express';
-import { BoardsService } from './stickers.service';
-import { ShowBoardDto } from './dto/show-board.dto';
-import { CreateBoardBody } from './dto/create-sticker.dto';
-import { UpdateBoardBody } from './dto/update-board.dto';
-import { YMD } from './dto/create-sticker.dto';
-import { BoardID, YMD_uid } from './dto/temporary.dto';
+import { StickersService } from './stickers.service';
+import { CreateStickerBody } from './dto/create-sticker.dto';
+import { UpdateStickerBody } from './dto/update-sticker.dto';
+import { StickerID } from './dto/temporary.dto';
 
 @Controller('api/users')
-export class BoardsController {
+export class StickersController {
   private readonly logger = new Logger('UsersController');
-  constructor(private readonly boardsService: BoardsService) { }
+  constructor(private readonly stickersService: StickersService) { }
 
   @UseInterceptors(ClassSerializerInterceptor)
-  @Post('board-create')
-  boardCreate(
-    @Body() createBoardBody: CreateBoardBody,
+  @Post('sticker-create')
+  stickerCreate(
+    @Body() createstickerBody: CreateStickerBody,
     @Req() request: Request,
   ) {
-    return this.boardsService.boardCreate(createBoardBody, request['user'].uid);
+    return this.stickersService.stickerCreate(createstickerBody);
+  }
+
+  @Post('sticker-toggle')
+  stickerToggle(@Body() stickerId: StickerID, @Req() request: Request) {
+    return this.stickersService.stickerToggle(stickerId);
   }
 
   @UseInterceptors(ClassSerializerInterceptor)
-  @Post('board-all-get')
-  boardAllGet(@Body() ymd_uid: YMD_uid, @Req() request: Request) {
-    const state = this.boardsService.boardAllGet(
-      ymd_uid.ownerFirebaseAuthUID,
-      ymd_uid.ymd,
-    );
-    return state;
-  }
-
-  @Delete('board-delete')
-  boardDelete(@Body() boardId: BoardID, @Req() request: Request) {
-    return this.boardsService.boardDelete(boardId);
-  }
-
-  @UseInterceptors(ClassSerializerInterceptor)
-  @Patch('board-patch')
-  boardUpdate(
+  @Patch('sticker-patch')
+  stickerUpdate(
     @Req() request: Request,
-    @Body() updateBoardBody: UpdateBoardBody,
+    @Body() updatestickerBody: UpdateStickerBody,
   ) {
-    const state = this.boardsService.boardUpdate(updateBoardBody);
-    return state.then((res) => new ShowBoardDto(res));
+    const state = this.stickersService.stickerUpdate(updatestickerBody);
+    return state.then((res) => res);
   }
 }

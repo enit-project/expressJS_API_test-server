@@ -64,15 +64,13 @@ export class BoardsService {
         where: { ownerId: currentUserId, isIgnored: false },
       })
       .then((boardList) => {
-        return boardList.map((board) => {
+        return boardList.map(async (board) => {
           const boardId = board.id;
           // TODO :
           // do the children sticker injection part
-          const children = [
-            { fake: 'fake sticker 1' },
-            { fake: 'fake sticker 2' },
-            { fake: 'fake sticker 3' },
-          ];
+          const children = await this.prisma.sticker.findMany({
+            where: { boardId: boardId },
+          });
 
           const showBoardDto = new ShowBoardDto(board);
           const res = {

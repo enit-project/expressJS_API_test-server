@@ -1,12 +1,12 @@
 import { Module } from '@nestjs/common';
-import { BoardsService } from './stickers.service';
-import { BoardsController } from './stickers.controller';
+import { StickersService } from './stickers.service';
+import { StickersController } from './stickers.controller';
 
 import { PrismaModule } from 'src/prisma/prisma.module';
 
 @Module({
-  controllers: [BoardsController],
-  providers: [BoardsService],
+  controllers: [StickersController],
+  providers: [StickersService],
   imports: [PrismaModule],
 })
-export class BoardsModule { }
+export class StickersModule { }

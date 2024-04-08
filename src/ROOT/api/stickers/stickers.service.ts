@@ -7,6 +7,9 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateStickerBody } from './dto/create-sticker.dto';
 import { success_200 } from 'src/constant/status.code';
+import { UpdateStickerBody } from './dto/update-sticker.dto';
+import { StickerID } from './dto/temporary.dto';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class StickersService {
@@ -46,17 +49,42 @@ export class StickersService {
     return success_200;
   }
 
-  StickerUpdate(updateStickerBody: UpdateStickerBody) {
+  stickerUpdate(updateStickerBody: UpdateStickerBody) {
     //TODO: do the validation of the owner and author
-    const state = this.prisma.Sticker.update({
+    const state = this.prisma.sticker.update({
       where: { id: updateStickerBody.StickerId },
       data: updateStickerBody.updateStickerDto,
     });
 
     state.catch((e) => console.log(e));
 
-    console.log('myinfo-get');
     console.log(state);
     return state;
+  }
+  async stickerToggle(stickerId: StickerID) {
+    //TODO: do the validation of the owner and author
+    const current_finished = await this.prisma.sticker
+      .findFirst({
+        where: { id: stickerId.stickerID },
+      })
+      .then((obj) => obj.isFinished);
+
+    if (current_finished == true) {
+      const state = this.prisma.sticker.update({
+        where: { id: stickerId.stickerID },
+        data: { isFinished: false },
+      });
+      state.catch((e) => console.log(e));
+      console.log(state);
+    } else {
+      const state = this.prisma.sticker.update({
+        where: { id: stickerId.stickerID },
+        data: { isFinished: true },
+      });
+      state.catch((e) => console.log(e));
+      console.log(state);
+    }
+
+    return success_200;
   }
 }
