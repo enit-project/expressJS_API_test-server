@@ -21,7 +21,7 @@ import { CreateStickerBody } from './dto/create-sticker.dto';
 import { UpdateStickerBody } from './dto/update-sticker.dto';
 import { StickerID } from './dto/temporary.dto';
 
-@Controller('api/users')
+@Controller('api/stickers')
 export class StickersController {
   private readonly logger = new Logger('UsersController');
   constructor(private readonly stickersService: StickersService) { }

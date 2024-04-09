@@ -5,6 +5,7 @@ import {
   IsDate,
   IsEmail,
   IsEnum,
+  IsNumber,
   IsString,
   isInt,
 } from 'class-validator';
@@ -40,11 +41,17 @@ export class CreateBoardDto {
   @IsArray()
   cycle: DAY[];
 
-  @IsDate()
-  start_time: Date;
+  @IsNumber()
+  start_hour: number;
 
-  @IsDate()
-  end_time: Date;
+  @IsNumber()
+  start_minute: number;
+
+  @IsNumber()
+  end_hour: number;
+
+  @IsNumber()
+  end_minute: number;
 }
 
 export class CreateBoardBody {

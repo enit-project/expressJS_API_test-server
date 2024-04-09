@@ -10,8 +10,10 @@ export class ShowBoardDto {
   title: string;
   description: string;
   cycle: DAY[];
-  start_time: Date;
-  end_time: Date;
+  start_hour: number;
+  start_minute: number;
+  end_hour: number;
+  end_minute: number;
   id: number;
 
   @Exclude()

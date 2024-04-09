@@ -23,7 +23,7 @@ import { UpdateBoardBody } from './dto/update-board.dto';
 import { YMD } from './dto/create-board.dto';
 import { BoardID, YMD_uid } from './dto/temporary.dto';
 
-@Controller('api/users')
+@Controller('api/boards')
 export class BoardsController {
   private readonly logger = new Logger('UsersController');
   constructor(private readonly boardsService: BoardsService) { }
@@ -34,12 +34,14 @@ export class BoardsController {
     @Body() createBoardBody: CreateBoardBody,
     @Req() request: Request,
   ) {
+    console.log(createBoardBody);
     return this.boardsService.boardCreate(createBoardBody, request['user'].uid);
   }
 
   @UseInterceptors(ClassSerializerInterceptor)
   @Post('board-all-get')
   boardAllGet(@Body() ymd_uid: YMD_uid, @Req() request: Request) {
+    console.log(ymd_uid);
     const state = this.boardsService.boardAllGet(
       ymd_uid.ownerFirebaseAuthUID,
       ymd_uid.ymd,

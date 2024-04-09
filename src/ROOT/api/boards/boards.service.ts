@@ -11,6 +11,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 
 import { success_200 } from 'src/constant/status.code';
 import { BoardID } from './dto/temporary.dto';
+import { DAY } from '@prisma/client';
 
 @Injectable()
 export class BoardsService {
@@ -51,6 +52,15 @@ export class BoardsService {
   }
 
   async boardAllGet(firebaseAuthUID: string, ymd: YMD) {
+    const dateTime = new Date(
+      ymd.currentYear,
+      ymd.currentMonth,
+      ymd.currentDate,
+    );
+
+    const day =
+      DAY[['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'][dateTime.getDay()]];
+
     const currentUserId = await this.prisma.user
       .findUnique({
         where: { firebaseAuthUID: firebaseAuthUID },
@@ -64,22 +74,30 @@ export class BoardsService {
         where: { ownerId: currentUserId, isIgnored: false },
       })
       .then((boardList) => {
-        return boardList.map(async (board) => {
-          const boardId = board.id;
-          // TODO :
-          // do the children sticker injection part
-          const children = await this.prisma.sticker.findMany({
-            where: { boardId: boardId },
+        return boardList
+          .filter((board) => {
+            if (board.cycle.includes(day)) {
+              return true;
+            } else {
+              return false;
+            }
+          })
+          .map(async (board) => {
+            const boardId = board.id;
+            // TODO :
+            // do the children sticker injection part
+            const children = await this.prisma.sticker.findMany({
+              where: { boardId: boardId },
+            });
+
+            const showBoardDto = new ShowBoardDto(board);
+            const res = {
+              ...showBoardDto,
+              children: children,
+            };
+
+            return res;
           });
-
-          const showBoardDto = new ShowBoardDto(board);
-          const res = {
-            ...showBoardDto,
-            children: children,
-          };
-
-          return res;
-        });
       });
 
     state.catch((e) => console.log(e));

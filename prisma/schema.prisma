@@ -78,8 +78,10 @@ model Board {
   description String
   cycle       DAY[]
 
-  start_time DateTime // 스케줄의 시작날짜임
-  end_time   DateTime // 스케줄의 끝날짜임
+  start_hour Int // 스케줄의 시작날짜임
+  start_minute Int // 스케줄의 시작날짜임
+  end_hour   Int // 스케줄의 끝날짜임
+  end_minute   Int // 스케줄의 끝날짜임
 
   authorId Int
   Sticker  Sticker[]
