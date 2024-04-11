@@ -3,5 +3,16 @@ const success_200 = {
   statusCode: 200,
 };
 
+const teapot_418 = {
+  teapot: 'use teabag instead of teapot : ',
+  statusCode: 418,
+};
 
-export { success_200 };
+function reject_with_msg(msg: string) {
+  return {
+    ...teapot_418,
+    messaage: msg,
+  };
+}
+
+export { success_200, reject_with_msg };

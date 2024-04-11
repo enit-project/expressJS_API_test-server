@@ -9,7 +9,7 @@ import { ShowBoardDto } from './dto/show-board.dto';
 import { UpdateBoardBody } from './dto/update-board.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 
-import { success_200 } from 'src/constant/status.code';
+import { reject_with_msg, success_200 } from 'src/constant/status.code';
 import { BoardID } from './dto/temporary.dto';
 import { DAY } from '@prisma/client';
 
@@ -21,21 +21,21 @@ export class BoardsService {
     createBoardBody: CreateBoardBody,
     authorFirebaseAuthUID: string,
   ) {
-    const authorId = await this.prisma.user
-      .findUnique({
-        where: { firebaseAuthUID: authorFirebaseAuthUID },
-      })
-      .then((res) => {
-        return res.id;
-      });
+    const author = await this.prisma.user.findUnique({
+      where: { firebaseAuthUID: authorFirebaseAuthUID },
+    });
+    if (author == null) {
+      return reject_with_msg('inappropriate author : no author user found');
+    }
+    const authorId = author.id;
 
-    const ownerId = await this.prisma.user
-      .findUnique({
-        where: { firebaseAuthUID: createBoardBody.ownerFirebaseAuthUID },
-      })
-      .then((res) => {
-        return res.id;
-      });
+    const owner = await this.prisma.user.findUnique({
+      where: { firebaseAuthUID: createBoardBody.ownerFirebaseAuthUID },
+    });
+    if (owner == null) {
+      return reject_with_msg('inappropriate owner : no owner user found');
+    }
+    const ownerId = owner.id;
 
     const userObject = {
       ...createBoardBody.createBoardDto,

@@ -59,4 +59,13 @@
   8. 이제 `docker compose up` 로 받은 이미지를 실행시키면 된다. postgreSQL 이미지가 없다면 자동으로 생성된다.
     - 아직 서버의 postgreSQL DB 이미지는 마이그레이션 되지 않은 상태이므로, 필요시 마이그레이션을 먼저 돌리고 실행한다.
       `docker compose run nest-api npx prisma migrate dev`
-      
+  npx prisma generate
+  docker compose build
+  docker image tag nest-api:latest ghcr.io/enit-project/nest-api:latest
+  docker push ghcr.io/enit-project/nest-api:latest
+
+  sudo cd expressJS_API_test-server
+  sudo docker pull ghcr.io/enit-project/nest-api:latest
+  sudo docker image tag ghcr.io/enit-project/nest-api:latest nest-api:latest
+  sudo docker compose run nest-api npx prisma migrate deploy
+  sudo docker compose up
