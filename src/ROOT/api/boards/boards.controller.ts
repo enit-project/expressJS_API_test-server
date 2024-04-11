@@ -22,7 +22,9 @@ import { CreateBoardBody } from './dto/create-board.dto';
 import { UpdateBoardBody } from './dto/update-board.dto';
 import { YMD } from './dto/create-board.dto';
 import { BoardID, YMD_uid } from './dto/temporary.dto';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
+@ApiBearerAuth('authorization')
 @Controller('api/boards')
 export class BoardsController {
   private readonly logger = new Logger('UsersController');

@@ -8,7 +8,9 @@ import { Request } from 'express';
 import { StatsService } from './stats.service';
 
 import { StatByWeekDto, StatByDayDto } from './dto/dto';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
+@ApiBearerAuth('authorization')
 @Controller('api/stats')
 export class StatsController {
   private readonly logger = new Logger('StatsController');

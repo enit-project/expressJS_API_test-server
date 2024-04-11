@@ -20,7 +20,9 @@ import { StickersService } from './stickers.service';
 import { CreateStickerBody } from './dto/create-sticker.dto';
 import { UpdateStickerBody } from './dto/update-sticker.dto';
 import { StickerID } from './dto/temporary.dto';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
+@ApiBearerAuth('authorization')
 @Controller('api/stickers')
 export class StickersController {
   private readonly logger = new Logger('UsersController');

@@ -12,6 +12,16 @@ async function bootstrap() {
   const config = new DocumentBuilder()
     .setTitle('Users API')
     .setDescription('The is a sample REST API')
+    .addBearerAuth(
+      {
+        type: 'http',
+        scheme: 'bearer',
+        bearerFormat: 'JWT',
+        name: 'authorization',
+        in: 'header',
+      },
+      'authorization',
+    )
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('swag', app, document); // 'swag' will became the address of the doc page
