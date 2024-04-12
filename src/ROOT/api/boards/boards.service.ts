@@ -54,12 +54,12 @@ export class BoardsService {
   async boardAllGet(firebaseAuthUID: string, ymd: YMD) {
     const dateTime = new Date(
       ymd.currentYear,
-      ymd.currentMonth,
+      ymd.currentMonth - 1,
       ymd.currentDate,
     );
 
     const day =
-      DAY[['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'][dateTime.getDay()]];
+      DAY[['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'][dateTime.getDay()]];
 
     const currentUserId = await this.prisma.user
       .findUnique({
@@ -74,7 +74,7 @@ export class BoardsService {
         where: { ownerId: currentUserId, isIgnored: false },
       })
       .then((boardList) => {
-        return boardList
+        const adjustedBoardList = boardList
           .filter((board) => {
             if (board.cycle.includes(day)) {
               return true;
@@ -82,22 +82,27 @@ export class BoardsService {
               return false;
             }
           })
-          .map(async (board) => {
+          .map((board) => {
             const boardId = board.id;
             // TODO :
             // do the children sticker injection part
-            const children = await this.prisma.sticker.findMany({
+            const children = this.prisma.sticker.findMany({
               where: { boardId: boardId },
             });
 
             const showBoardDto = new ShowBoardDto(board);
-            const res = {
-              ...showBoardDto,
-              children: children,
-            };
 
-            return res;
+            return children.then((childrenPart) => {
+              const res = {
+                ...showBoardDto,
+                children: childrenPart,
+              };
+              console.log(res);
+              return res;
+            });
           });
+
+        return Promise.all(adjustedBoardList);
       });
 
     state.catch((e) => console.log(e));
