@@ -188,6 +188,8 @@ export class StatsService {
         },
       );
       weekByList.push(byDayStickerSum);
+
+      dateTimeCurrent.setDate(dateTimeCurrent.getDate() + 1);
     }
     return occourenceList;
   }

@@ -27,6 +27,7 @@ export class StickersService {
     //     return res.id;
     //   });
 
+
     const boardId = await this.prisma.board
       .findUnique({
         where: { id: createStickerBody.boardID },

@@ -56,7 +56,7 @@ export class CreateStickerDto {
 
 export class CreateStickerBody {
   createStickerDto: CreateStickerDto;
-  @IsString()
+  @IsInt()
   boardID: number;
 }
 

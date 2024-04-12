@@ -98,7 +98,7 @@ model Sticker {
   description String @default("")
 
   createdAtYear  Int
-  createdAtMonth Int
+  createdAtMonth Int  //  for sure, Javascript month starts at 0, (0~11) but I will store just 1~12 representation.
   createdAtDate  Int
 
   emoji_unicode String
