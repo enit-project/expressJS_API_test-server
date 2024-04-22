@@ -37,13 +37,13 @@ export class BoardsService {
     }
     const ownerId = owner.id;
 
-    const userObject = {
+    const boardObject = {
       ...createBoardBody.createBoardDto,
       ownerId: ownerId,
       authorId: authorId,
     };
 
-    const state = this.prisma.board.create({ data: userObject });
+    const state = this.prisma.board.create({ data: boardObject });
     state.catch((e) => console.log(e));
 
     console.log('boardCreate');

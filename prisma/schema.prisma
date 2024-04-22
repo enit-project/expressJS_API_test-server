@@ -100,9 +100,10 @@ model Board {
   id        Int     @id @default(autoincrement())
   project   Project @relation(fields: [projectId], references: [id])
   projectId Int
-
   user        User   @relation(fields: [ownerId], references: [id])
   ownerId     Int
+
+  authorId    Int
   title       String
   description String
   cycle       DAY[]
@@ -112,7 +113,6 @@ model Board {
   end_hour     Int // 스케줄의 끝날짜임
   end_minute   Int // 스케줄의 끝날짜임
 
-  authorId                      Int
   userBoardSketchRelatedSticker UserBoardSketchRelatedSticker[]
 
   isIgnored Boolean @default(false)
