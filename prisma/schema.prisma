@@ -10,12 +10,11 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum Role {
-  STUDENT
-  PARENT
-  TEACHER
-}
-
+/// model User
+/// object of the individual user.
+///
+/// enum Role
+/// role of the User which affects the each user's privilege 
 model User {
   id              Int      @id @default(autoincrement())
   name            String
@@ -25,8 +24,30 @@ model User {
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 
-  userRelated UserRelated[]
-  Board       Board[]
+  userRelated                   UserRelated[]
+  Board                         Board[]
+  userBoardSketchRelatedSticker UserBoardSketchRelatedSticker[]
+}
+
+enum Role {
+  STUDENT
+  PARENT
+  TEACHER
+}
+
+/// model UserRelated
+/// link the multiple privileges to the owner and the giver.
+///
+/// enum PrivilegeStatus
+/// represents the current state of the privilege.
+model UserRelated {
+  id   Int  @id @default(autoincrement())
+  user User @relation(fields: [ownerId], references: [id])
+
+  ownerId Int
+  giverId Int
+
+  relatedPrivilege RelatedPrivilege[]
 }
 
 enum PrivilegeStatus {
@@ -36,12 +57,18 @@ enum PrivilegeStatus {
   IFAUTHOR
 }
 
-model UserRelated {
-  id               Int                @id @default(autoincrement())
-  user             User               @relation(fields: [ownerId], references: [id])
-  ownerId          Int
-  giverId          Int
-  relatedPrivilege RelatedPrivilege[]
+/// model RelatedPrivilege
+/// define the specific table's CRUD privilege of the owner targeted to the giver.
+/// 
+/// enum REST
+/// constant of the C, R, U, D, respectively
+model RelatedPrivilege {
+  id            Int             @id @default(autoincrement())
+  userRelated   UserRelated     @relation(fields: [userRelatedId], references: [id])
+  userRelatedId Int
+  table         String // which table to set privilege
+  status        PrivilegeStatus @default(PENDING)
+  action        REST
 }
 
 enum REST {
@@ -51,13 +78,44 @@ enum REST {
   DELETE
 }
 
-model RelatedPrivilege {
-  id            Int             @id @default(autoincrement())
-  userRelated   UserRelated     @relation(fields: [userRelatedId], references: [id])
-  userRelatedId Int
-  table         String // which table to set privilege
-  status        PrivilegeStatus @default(PENDING)
-  action        REST
+/// model Project
+/// collection of the Board
+model Project {
+  id Int @id @default(autoincrement())
+
+  title       String
+  description String @default("")
+
+  board Board[]
+}
+
+/// model Board <- Todo
+/// the object that the sticker sticks.
+/// represents the user's life routine
+/// ex) english study, math study, walking street, ...
+///
+/// enum DAY
+/// the day of the week, constant
+model Board {
+  id        Int     @id @default(autoincrement())
+  project   Project @relation(fields: [projectId], references: [id])
+  projectId Int
+
+  user        User   @relation(fields: [ownerId], references: [id])
+  ownerId     Int
+  title       String
+  description String
+  cycle       DAY[]
+
+  start_hour   Int // 스케줄의 시작날짜임
+  start_minute Int // 스케줄의 시작날짜임
+  end_hour     Int // 스케줄의 끝날짜임
+  end_minute   Int // 스케줄의 끝날짜임
+
+  authorId                      Int
+  userBoardSketchRelatedSticker UserBoardSketchRelatedSticker[]
+
+  isIgnored Boolean @default(false)
 }
 
 enum DAY {
@@ -70,38 +128,95 @@ enum DAY {
   SUN
 }
 
-model Board {
-  id          Int    @id @default(autoincrement())
-  user        User   @relation(fields: [ownerId], references: [id])
-  ownerId     Int
-  title       String
-  description String
-  cycle       DAY[]
+/// model Sketch <- Stamp
+/// description(sketch, templete) of the Sticker, which will be applied to the whole sticker
+/// reference the same sketch model. 
+model Sketch {
+  id Int @id @default(autoincrement())
 
-  start_hour Int // 스케줄의 시작날짜임
-  start_minute Int // 스케줄의 시작날짜임
-  end_hour   Int // 스케줄의 끝날짜임
-  end_minute   Int // 스케줄의 끝날짜임
+  title         String
+  description   String @default("")
+  emoji_unicode String
 
-  authorId Int
-  Sticker  Sticker[]
-
-  isIgnored Boolean @default(false)
+  sketchFunc                    SketchFunc[]
+  UserBoardSketchRelatedSticker UserBoardSketchRelatedSticker[]
 }
 
-model Sticker {
-  id      Int   @id @default(autoincrement())
-  board   Board @relation(fields: [boardId], references: [id])
-  boardId Int // owner of the sticker is always same as the board's owner.
+/// model SketchFunc <- DefFunc
+/// add the simple attribute to the sketch, which is the functionalities like 
+/// adding some points, page, etc.
+///
+/// enum FuncName
+model SketchFunc {
+  id       Int    @id @default(autoincrement())
+  sketch   Sketch @relation(fields: [sketchId], references: [id])
+  sketchId Int
 
-  title       String
-  description String @default("")
+  func_name FuncName
+
+  funcOption FuncOption[]
+}
+
+enum FuncName {
+  NOFUNC // do nothing function
+}
+
+/// model FuncOption <- FuncArg
+/// gives functions the situation which explains the detailed request.
+/// ex) function that gives sketch the points -> "is_negative_allowed" : "true" 
+/// then the point could became the negative 
+model FuncOption {
+  id           Int        @id @default(autoincrement())
+  sketchFunc   SketchFunc @relation(fields: [sketchFuncId], references: [id])
+  sketchFuncId Int
+
+  arg_name  String
+  arg_value String
+}
+
+/// model UserBoardSketchRelatedSticker <- UserTodoStampOwnedHistory
+/// relation management model for the sticker model.
+/// relate sticker log to the which board, which user, which sketch related.
+model UserBoardSketchRelatedSticker {
+  id Int @id @default(autoincrement())
+
+  board    Board  @relation(fields: [boardId], references: [id])
+  boardId  Int
+  User     User   @relation(fields: [userId], references: [id])
+  userId   Int
+  Sketch   Sketch @relation(fields: [sketchId], references: [id])
+  sketchId Int
+
+  sticker Sticker[]
+}
+
+/// model Sticker <- History
+/// log for the sticking the sticker on the board.
+model Sticker {
+  id                              Int                           @id @default(autoincrement())
+  userBoardSketchRelatedSticker   UserBoardSketchRelatedSticker @relation(fields: [userBoardSketchRelatedStickerId], references: [id])
+  userBoardSketchRelatedStickerId Int
+
+  title         String
+  description   String  @default("")
+  emoji_unicode String
+  isFinished    Boolean @default(true)
 
   createdAtYear  Int
-  createdAtMonth Int  //  for sure, Javascript month starts at 0, (0~11) but I will store just 1~12 representation.
+  createdAtMonth Int //  for sure, Javascript month starts at 0, (0~11) but I will store just 1~12 representation.
   createdAtDate  Int
 
-  emoji_unicode String
-  // priority      Int      @default(1)
-  isFinished    Boolean @default(true)
+  stickerArg StickerArg[]
+}
+
+/// model StickerArg <- HistoryArg
+/// if the information calculated by the Sketch and the Func has non-fixed attribute, 
+/// then they moves to this model.
+model StickerArg {
+  id        Int     @id @default(autoincrement())
+  sticker   Sticker @relation(fields: [stickerId], references: [id])
+  stickerId Int
+
+  arg_name  String
+  arg_value String
 }
