@@ -40,13 +40,16 @@
   1. 작업 후 `docker images` 로 이미지를 검색해보면, `nest-api:latest` 이미지가 존재할 것이다. 그 이미지를 업로드할 것이다.
   2. 태그 변경이 필요하다.
     `docker image tag nest-api:latest ghcr.io/enit-project/nest-api:latest`
+    `docker image tag prisma-studio:latest ghcr.io/enit-project/prisma-studio:latest`
   3. ghcr.io 에 로그인한 뒤, push 한다. 단, 로그인 아이디는 git organization의 아이디어야 한다. 패스워드는 토큰으로 하면 된다.
     `docker login https://ghcr.io`
     `docker push ghcr.io/enit-project/nest-api:latest` 
+    `docker push ghcr.io/enit-project/prisma-studio:latest` 
     작성 시점에서는 이미지(package) 들간의 버전 관리는 되고 있지 않다. latest 태그로 통합되어 있다.
   4. 이제 서버에 SSH로 접근한다.
   5. 마찬가지로 서버에도 ghcr.io에 로그인해야 한다. 그 뒤,
     `docker pull ghcr.io/enit-project/nest-api:latest`
+    `docker pull ghcr.io/enit-project/prisma-studio:latest` 
     로 이미지를 다운받는다.
   6. 이미지의 구동에는 프로젝트의 파일이 필요하지 않으며, 오직 docker-compose.yml 만이 필요하다. 따라서, 온라인으로 직접 github에 접속하여 only_launchfile 브랜치 의 docker-compose.yml 파일을 master의 것과 비교하며 수정한다. 
     - 이때 해당 .yml에서는 build 태그가 의미가 없으며, db 자동 마이그레이션이 필요한 등 차이점이 있다. 왠만하면 그대로 진행해도 될 것이다.
@@ -56,16 +59,22 @@
       `git pull https://github.com/enit-project/expressJS_API_test-server.git only_launchfile`
   7. 받은 이미지는 현재 이름이 ghcr.io/enit-project/nest-api:latest 인 상태이다. 원래의 이름으로 돌려야 한다.
     `docker image tag ghcr.io/enit-project/nest-api:latest nest-api:latest`
+    `docker image tag ghcr.io/enit-project/prisma-studio:latest prisma-studio:latest`
   8. 이제 `docker compose up` 로 받은 이미지를 실행시키면 된다. postgreSQL 이미지가 없다면 자동으로 생성된다.
     - 아직 서버의 postgreSQL DB 이미지는 마이그레이션 되지 않은 상태이므로, 필요시 마이그레이션을 먼저 돌리고 실행한다.
       `docker compose run nest-api npx prisma migrate dev`
+
   npx prisma generate
   docker compose build
   docker image tag nest-api:latest ghcr.io/enit-project/nest-api:latest
+  docker image tag prisma-studio:latest ghcr.io/enit-project/prisma-studio:latest
   docker push ghcr.io/enit-project/nest-api:latest
+  docker push ghcr.io/enit-project/prisma-studio:latest
 
   sudo cd expressJS_API_test-server
   sudo docker pull ghcr.io/enit-project/nest-api:latest
+  sudo docker pull ghcr.io/enit-project/prisma-studio:latest
   sudo docker image tag ghcr.io/enit-project/nest-api:latest nest-api:latest
+  sudo docker image tag ghcr.io/enit-project/prisma-studio:latest prisma-studio:latest
   sudo docker compose run nest-api npx prisma migrate deploy
   sudo docker compose up
