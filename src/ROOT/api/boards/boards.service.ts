@@ -51,6 +51,25 @@ export class BoardsService {
     return success_200;
   }
 
+  async boardGet(firebaseAuthUID: string) {
+    const currentUserId = await this.prisma.user
+      .findUnique({
+        where: { firebaseAuthUID: firebaseAuthUID },
+      })
+      .then((user) => {
+        return user.id;
+      });
+
+    const state = this.prisma.board.findMany({
+      where: { ownerId: currentUserId, isIgnored: false },
+    });
+    state.catch((e) => console.log(e));
+
+    console.log('board-all-get');
+    console.log(state);
+    return state;
+  }
+
   async boardAllGet(firebaseAuthUID: string, ymd: YMD) {
     const dateTime = new Date(
       ymd.currentYear,
