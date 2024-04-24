@@ -25,9 +25,6 @@ export class StatByWeekDto {
   @IsInt()
   year: number;
   @ApiProperty()
-  @IsInt()
-  month: number;
-  @ApiProperty()
   @IsArray()
   targetBoardIdList: number[];
 }
