@@ -20,8 +20,7 @@ import { BoardsService } from './boards.service';
 import { ShowBoardDto } from './dto/show-board.dto';
 import { CreateBoardBody } from './dto/create-board.dto';
 import { UpdateBoardBody } from './dto/update-board.dto';
-import { YMD } from './dto/create-board.dto';
-import { BoardID, YMD_uid } from './dto/temporary.dto';
+import { BoardID, YMD_uid, uid } from './dto/temporary.dto';
 import { ApiBearerAuth } from '@nestjs/swagger';
 
 @ApiBearerAuth('authorization')
@@ -51,6 +50,13 @@ export class BoardsController {
     return state;
   }
 
+  @Post('board-get')
+  boardGet(@Body() uid: uid, @Req() request: Request) {
+    // console.log(ymd_uid);
+    const state = this.boardsService.boardGet(uid.firebaseUID);
+    return state;
+  }
+  
   @Delete('board-delete')
   boardDelete(@Body() boardId: BoardID, @Req() request: Request) {
     return this.boardsService.boardDelete(boardId);

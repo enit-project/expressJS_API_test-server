@@ -8,3 +8,7 @@ export class YMD_uid {
   ymd: YMD;
   ownerFirebaseAuthUID: string;
 }
+
+export class uid {
+  firebaseUID: string;
+}
