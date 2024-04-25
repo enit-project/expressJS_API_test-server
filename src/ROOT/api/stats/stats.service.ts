@@ -54,8 +54,11 @@ export class StatsService {
     }
 
     // calculate the occourence by day, from given range of month
-    const dateStart = new Date(year, month, 1).getDate();
-    const dateEnd = new Date(year, month + 1, 0).getDate();
+    // warning : JS month starts at 0 (0~11), but input month is starts at 1 (1~12)
+    const dateStart = new Date(year, month - 1, 1).getDate();
+    const dateEnd = new Date(year, month, 0).getDate();
+    console.log(dateStart);
+    console.log(dateEnd);
 
     const occourenceList = [];
     for (let date = dateStart; date <= dateEnd; date++) {
