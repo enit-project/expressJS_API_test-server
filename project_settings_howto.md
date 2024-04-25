@@ -71,7 +71,7 @@
   docker push ghcr.io/enit-project/nest-api:latest
   docker push ghcr.io/enit-project/prisma-studio:latest
 
-  sudo cd expressJS_API_test-server
+  cd expressJS_API_test-server
   sudo docker pull ghcr.io/enit-project/nest-api:latest
   sudo docker pull ghcr.io/enit-project/prisma-studio:latest
   sudo docker image tag ghcr.io/enit-project/nest-api:latest nest-api:latest
